@@ -1,0 +1,7 @@
+{
+  "threshold": 0.442808940935008,
+  "target_recall": 0.7,
+  "train_precision_tuned": 0.6166158536585366,
+  "train_recall_tuned": 0.7004329004329004,
+  "train_f1_tuned": 0.6558573165788407
+}

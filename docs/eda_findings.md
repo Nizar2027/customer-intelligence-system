@@ -8,6 +8,7 @@ This document summarizes the key findings from the exploratory data analysis per
 The goal of this analysis is to understand the structure of the transaction dataset, identify data quality issues, analyze purchasing behavior, and prepare insights that guide the feature engineering stage of the project.
 
 
+
 ## Overview
 
 This notebook explores the **training transaction dataset** for the Customer Intelligence System.  
