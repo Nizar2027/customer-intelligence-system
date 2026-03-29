@@ -1,0 +1,8 @@
+[
+  "recency_days",
+  "frequency_orders",
+  "monetary_total",
+  "total_items",
+  "unique_products",
+  "avg_order_value"
+]

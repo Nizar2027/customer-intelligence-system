@@ -1,0 +1,26 @@
+[
+  {
+    "feature": "recency_days",
+    "coefficient": 12.609737612259096
+  },
+  {
+    "feature": "frequency_orders",
+    "coefficient": -143.86779376139646
+  },
+  {
+    "feature": "monetary_total",
+    "coefficient": 6275.8408204792695
+  },
+  {
+    "feature": "total_items",
+    "coefficient": -2624.1215913324518
+  },
+  {
+    "feature": "unique_products",
+    "coefficient": -52.6792482376531
+  },
+  {
+    "feature": "avg_order_value",
+    "coefficient": -349.0146566843563
+  }
+]
