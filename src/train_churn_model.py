@@ -8,10 +8,9 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import (
-    GradientBoostingClassifier,
     RandomForestClassifier,
     StackingClassifier,
-    VotingClassifier,
+    
 )
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -24,18 +23,15 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import cross_val_predict, train_test_split
 from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
-
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 RANDOM_STATE = 42
 TARGET_COLUMN = "churn_label"
 DESIRED_RECALL = 0.70
 
 
-def build_final_stacking_model():
-
-    from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import StandardScaler
+def build_final_stacking_model() -> StackingClassifier:
 
     log_reg = Pipeline([
         ("scaler", StandardScaler()),

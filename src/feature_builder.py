@@ -63,7 +63,7 @@ def build_customer_features(
         features["monetary_total"] / features["frequency_orders"]
     )
 
-    return features
+    return features.reset_index()
 
 
 def build_future_labels(future_transactions: pd.DataFrame) -> pd.DataFrame:
@@ -76,7 +76,7 @@ def build_future_labels(future_transactions: pd.DataFrame) -> pd.DataFrame:
         future_orders=("InvoiceNo", "nunique"),
     )
 
-    return future_labels
+    return future_labels.reset_index()
 
 
 def build_model_dataset(

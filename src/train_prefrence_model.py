@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import json
@@ -8,25 +7,33 @@ import numpy as np
 import pandas as pd
 
 
-RANDOM_STATE = 42
+BASE_DIR = Path(__file__).resolve().parents[1]
+
+DATA_PATH = BASE_DIR / "data" / "processed" / "train_transactions.csv"
+OUTPUT_PATH = BASE_DIR / "data" / "processed" / "customer_preferences.csv"
+REPORTS_DIR = BASE_DIR / "reports"
+
+# These weights were derived from a linear regression model trained on the revenue dataset
+# and later adjusted using business intuition during the preference modeling notebook.
+
+W_FREQ = 0.47
+W_MONETARY = 0.42
+W_RECENCY = 0.10
 
 
 def build_preference_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
-    # Clean data
     df = df.dropna(subset=["CustomerID"])
     df["Revenue"] = df["Quantity"] * df["UnitPrice"]
     df = df[(df["Quantity"] > 0) & (df["Revenue"] > 0)]
 
-    # Grouping
     pref = df.groupby(["CustomerID", "Description"]).agg(
         frequency=("InvoiceNo", "nunique"),
         monetary=("Revenue", "sum"),
         last_purchase=("InvoiceDate", "max"),
     ).reset_index()
 
-    # Recency
     snapshot_date = df["InvoiceDate"].max() + pd.Timedelta(days=1)
     pref["recency_days"] = (snapshot_date - pref["last_purchase"]).dt.days
 
@@ -56,31 +63,27 @@ def normalize_per_customer(pref: pd.DataFrame) -> pd.DataFrame:
 def compute_preference_score(pref: pd.DataFrame) -> pd.DataFrame:
     pref = pref.copy()
 
-    # Final tuned weights (من شغلك 👇)
-    w_freq = 0.47
-    w_monetary = 0.42
-    w_recency = 0.10
-
     pref["preference_score"] = (
-        w_freq * pref["freq_norm"]
-        + w_monetary * pref["monetary_norm"]
-        + w_recency * pref["recency_norm"]
+        W_FREQ * pref["freq_norm"]
+        + W_MONETARY * pref["monetary_norm"]
+        + W_RECENCY * pref["recency_norm"]
     )
 
     return pref
 
 
+def sort_preferences(pref: pd.DataFrame) -> pd.DataFrame:
+    return pref.sort_values(
+        ["CustomerID", "preference_score"],
+        ascending=[True, False]
+    ).copy()
+
+
 def main() -> None:
-    project_root = Path(__file__).resolve().parents[1]
-
-    data_path = project_root / "data" / "processed" / "train_transactions.csv"
-    output_path = project_root / "data" / "processed" / "customer_preferences.csv"
-    reports_dir = project_root / "reports"
-
-    reports_dir.mkdir(parents=True, exist_ok=True)
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Loading transactions dataset...")
-    df = pd.read_csv(data_path, parse_dates=["InvoiceDate"])
+    df = pd.read_csv(DATA_PATH, parse_dates=["InvoiceDate"])
 
     print("Building preference features...")
     pref = build_preference_features(df)
@@ -92,28 +95,40 @@ def main() -> None:
     pref = compute_preference_score(pref)
 
     print("Sorting results...")
-    pref = pref.sort_values(
-        ["CustomerID", "preference_score"],
-        ascending=[True, False]
-    )
+    pref = sort_preferences(pref)
 
     print("Saving preferences...")
-    pref.to_csv(output_path, index=False)
+    pref.to_csv(OUTPUT_PATH, index=False)
 
     summary = {
         "num_customers": int(pref["CustomerID"].nunique()),
         "num_rows": int(len(pref)),
-        "top_score_mean": float(pref.groupby("CustomerID")["preference_score"].max().mean())
+        "top_score_mean": float(
+            pref.groupby("CustomerID")["preference_score"].max().mean()
+        ),
     }
 
-    summary_path = reports_dir / "preference_summary.json"
+    config = {
+        "w_freq": W_FREQ,
+        "w_monetary": W_MONETARY,
+        "w_recency": W_RECENCY,
+        "normalization": "per_customer",
+        "monetary_transform": "log1p",
+    }
+
+    summary_path = REPORTS_DIR / "preference_summary.json"
+    config_path = REPORTS_DIR / "preference_config.json"
 
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=2)
+
     print("Done.")
-    print(f"Preferences saved to: {output_path}")
+    print(f"Preferences saved to: {OUTPUT_PATH}")
     print(f"Summary saved to: {summary_path}")
+    print(f"Config saved to: {config_path}")
 
 
 if __name__ == "__main__":
