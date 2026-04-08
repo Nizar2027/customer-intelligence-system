@@ -15,6 +15,8 @@ from src.business_rules import (
     classify_revenue_segment,
 )
 from src.data_validation import validate_prediction_input
+from src.business_rules import clean_revenue
+
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,6 +105,7 @@ def predict_revenue(input_data: dict[str, Any]) -> dict[str, Any]:
     input_df = prepare_input_dataframe(input_data, feature_names)
 
     predicted_revenue = float(model.predict(input_df)[0])
+    predicted_revenue = clean_revenue(predicted_revenue)
     revenue_segment = classify_revenue_segment(predicted_revenue)
 
     return {

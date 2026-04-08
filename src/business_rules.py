@@ -3,17 +3,20 @@ from __future__ import annotations
 
 
 def classify_churn_risk(churn_probability: float) -> str:
-    if churn_probability >= 0.80:
+    if churn_probability >= 0.65:
         return "High Risk"
-    if churn_probability >= 0.50:
+    if churn_probability >= 0.35:
         return "Medium Risk"
     return "Low Risk"
 
+def clean_revenue(predicted_revenue: float) -> float:
+    return max(0, predicted_revenue)
+
 
 def classify_revenue_segment(predicted_revenue: float) -> str:
-    if predicted_revenue >= 3000:
+    if predicted_revenue >= 2000:
         return "High Value"
-    if predicted_revenue >= 1000:
+    if predicted_revenue >= 500:
         return "Medium Value"
     return "Low Value"
 
