@@ -2,6 +2,7 @@
 # Data folders
 data/raw/
 data/processed/
+data/powerbi
 
 # Python cache
 __pycache__/

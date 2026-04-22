@@ -1,26 +1,30 @@
 [
   {
+    "feature": "CustomerID",
+    "coefficient": 9.999474638646955
+  },
+  {
     "feature": "recency_days",
-    "coefficient": 12.609737612259096
+    "coefficient": 12.471376217092626
   },
   {
     "feature": "frequency_orders",
-    "coefficient": -143.86779376139646
+    "coefficient": -142.8807587103917
   },
   {
     "feature": "monetary_total",
-    "coefficient": 6275.8408204792695
+    "coefficient": 6273.844352049438
   },
   {
     "feature": "total_items",
-    "coefficient": -2624.1215913324518
+    "coefficient": -2622.8981547657645
   },
   {
     "feature": "unique_products",
-    "coefficient": -52.6792482376531
+    "coefficient": -53.29071525841336
   },
   {
     "feature": "avg_order_value",
-    "coefficient": -349.0146566843563
+    "coefficient": -347.4029679701626
   }
 ]

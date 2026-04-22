@@ -7,7 +7,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -50,6 +50,7 @@ def main() -> None:
         random_state=RANDOM_STATE,
     )
 
+
     print("Building final linear regression model...")
     lin_reg = build_final_linear_model()
 
@@ -82,9 +83,11 @@ def main() -> None:
     print("Evaluating on test set...")
     y_test_pred = lin_reg.predict(X_test)
     test_rmse = float(np.sqrt(mean_squared_error(y_test, y_test_pred)))
+    test_mae = float(mean_absolute_error(y_test, y_test_pred))
 
     test_metrics = {
         "test_rmse": test_rmse,
+        "test_mae": test_mae,
     }
 
     print("=== Final Test Metrics ===")
