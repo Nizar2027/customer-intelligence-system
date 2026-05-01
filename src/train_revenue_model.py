@@ -37,7 +37,7 @@ def main() -> None:
     print("Loading revenue dataset...")
     df = pd.read_csv(data_path)
 
-    X = df.drop(columns=[TARGET_COLUMN])
+    X = df.drop(columns=[TARGET_COLUMN, "CustomerID"])
     y = df[TARGET_COLUMN]
 
     feature_names = X.columns.tolist()

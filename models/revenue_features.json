@@ -1,5 +1,4 @@
 [
-  "CustomerID",
   "recency_days",
   "frequency_orders",
   "monetary_total",
